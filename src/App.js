@@ -61,11 +61,31 @@ function App() {
 
   }
 
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
 
+  const updateTodo = async (id) => {
+
+    console.log(id)
+    setEditing(true)
+    setEditingId(id)
+  }
 
 
+  const onEditSubmit = (data) => {
+
+    console.log(data)
+    axios.post('http://localhost:8000/update', data)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    setEditing(false)
+
+  };
 
 
   return (
@@ -81,11 +101,28 @@ function App() {
         return (<div >
           {i.id}- {i.title}-{i.body}
           <button onClick={() => deleteTodo(i.id)} > Delete</button>
-          <button > update</button>
+          <button onClick={() => updateTodo(i.id)}> update</button>
 
         </div>)
       })
       }
+
+
+      {editing ? (
+        <div>
+          <p>UPdate form for {editingId}</p>
+          <form onSubmit={handleSubmit(onEditSubmit)}>
+            <input type="number" name="id" {...register("id")} />
+            <input type="text" name="title" {...register("title")} />
+            <input type="text" name="body" {...register("body")} />
+            <input type="submit" />
+          </form>
+        </div>
+      ) : (
+        <div>
+
+        </div>
+      )}
     </div>
   );
 }
