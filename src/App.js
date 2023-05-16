@@ -1,23 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useState, useEffect } from "react";
+
+
+
 
 function App() {
+
+
+  let [responseData, setResponseData] = useState([])
+
+
+  const fetchdata = () => {
+    axios.get('http://localhost:8000/')
+      .then(function (response) {
+        setResponseData(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
+
+  useEffect(fetchdata, [])
+
+  console.log(responseData)
+
+
+
+
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
+
+  const onSubmit = (data) => {
+
+    console.log(data)
+    axios.post('http://localhost:8000/', data)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+  };
+
+
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      Basic todo
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input type="number" name="id" {...register("id")} />
+        <input type="text" name="title" {...register("title")} />
+        <input type="text" name="body" {...register("body")} />
+        <input type="submit" />
+      </form>
+      {responseData.map((i) => {
+        return (<div >{i.id}- {i.title}-{i.body} </div>)
+      })
+      }
     </div>
   );
 }
