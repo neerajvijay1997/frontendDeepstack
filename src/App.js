@@ -45,6 +45,25 @@ function App() {
 
   };
 
+  const deleteTodo = async (id) => {
+
+    console.log(id)
+    const data = { "id": id }
+    axios.post('http://localhost:8000/delete', data)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    fetchdata()
+
+  }
+
+  const [editing, setEditing] = useState(null);
+
+
 
 
 
@@ -59,7 +78,12 @@ function App() {
         <input type="submit" />
       </form>
       {responseData.map((i) => {
-        return (<div >{i.id}- {i.title}-{i.body} </div>)
+        return (<div >
+          {i.id}- {i.title}-{i.body}
+          <button onClick={() => deleteTodo(i.id)} > Delete</button>
+          <button > update</button>
+
+        </div>)
       })
       }
     </div>
